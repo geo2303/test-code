@@ -1,0 +1,5 @@
+def func_x(is_chubby):
+    if is_chubby is True:
+        return a()
+    elif is_chubby is False:
+        return b()
