@@ -8,4 +8,4 @@ def func_x(num):
     elif num == 4:
         return d()
     elif num == 5:
-        return e()# test-code
+        return e()
