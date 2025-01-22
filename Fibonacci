@@ -1,26 +1,48 @@
-# python program to check if x is a perfect square
-import math
+import boto3
+from botocore.exceptions import NoCredentialsError
 
-# A utility function that returns true if x is perfect square
+def upload_file_to_s3(file_name, bucket_name, object_name=None):
+    """
+    Upload a file to an S3 bucket.
 
+    :param file_name: File to upload
+    :param bucket_name: Bucket to upload to
+    :param object_name: S3 object name. If not specified, file_name is used
+    :return: True if file was uploaded, else False
+    """
+    if object_name is None:
+        object_name = file_name
 
-def isPerfectSquare(x):
-	s = int(math.sqrt(x))
-	return s*s == x
+    # Initialize an S3 client
+    s3_client = boto3.client('s3')
 
-# Returns true if n is a Fibonacci Number, else false
+    try:
+        # Upload the file
+        s3_client.upload_file(file_name, bucket_name, object_name)
+        print(f"File {file_name} uploaded to bucket {bucket_name} as {object_name}")
+        return True
+    except FileNotFoundError:
+        print(f"File {file_name} not found")
+        return False
+    except NoCredentialsError:
+        print("AWS credentials not available")
+        return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
 
+def main():
+    # Define your parameters
+    file_name = "example.txt"
+    bucket_name = "my-example-bucket"
 
-def isFibonacci(n):
+    # Upload the file
+    success = upload_file_to_s3(file_name, bucket_name)
 
-	# n is Fibonacci if one of 5*n*n + 4 or 5*n*n - 4 or both
-	# is a perfect square
-	return isPerfectSquare(5*n*n + 4) or isPerfectSquare(5*n*n - 4)
+    if success:
+        print("File uploaded successfully!")
+    else:
+        print("File upload failed!")
 
-
-# A utility function to test above functions
-for i in range(1, 11):
-	if (isFibonacci(i) == True):
-		print(i, "is a Fibonacci Number")
-	else:
-		print(i, "is a not Fibonacci Number ")
+if __name__ == "__main__":
+    main()
